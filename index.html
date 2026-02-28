@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Green Track AI 🌿</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,900;1,300&family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-score" id="modal-score-ring">
+      <span class="modal-score-num" id="modal-score-val">72</span>
+      <span class="modal-score-label">SCORE</span>
+    </div>
+    <div class="modal-title" id="modal-title">Hôm nay bạn sống khá xanh!</div>
+    <div class="modal-msg" id="modal-msg">Đang tải phản hồi từ AI...</div>
+    <div class="modal-breakdown" id="modal-breakdown"></div>
+    <button class="modal-btn" onclick="closeModal()">Tuyệt! Về dashboard 🌿</button>
+  </div>
+</div>
+
+<!-- SHELL -->
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">🌿</div>
+      <div class="brand-name">Green Track</div>
+      <div class="brand-sub">AI Platform</div>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" onclick="go('home',this)"><span class="nav-icon">🏠</span>Dashboard</button>
+      <button class="nav-item" onclick="go('log',this)"><span class="nav-icon">✏️</span>Ghi hôm nay</button>
+      <button class="nav-item" onclick="go('analyze',this)"><span class="nav-icon">📷</span>Phân tích rác</button>
+      <button class="nav-item" onclick="go('news',this)"><span class="nav-icon">🌍</span>Bản tin xanh</button>
+      <button class="nav-item" onclick="go('rank',this)"><span class="nav-icon">🏆</span>Xếp hạng</button>
+      <button class="nav-item" onclick="go('profile',this)"><span class="nav-icon">👤</span>Hồ sơ</button>
+    </nav>
+    <div style="padding:12px">
+      <div class="sidebar-streak">
+        <div class="streak-fire">🔥</div>
+        <div class="streak-num" id="sidebar-streak">12</div>
+        <div class="streak-label">ngày liên tiếp</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ========== DASHBOARD ========== -->
+    <div class="view active" id="view-home">
+      <div class="hero">
+        <div class="hero-pattern"></div>
+        <div class="hero-label" id="hero-greeting">Chào buổi sáng ☀️</div>
+        <div class="hero-title">Xin chào, <em id="hero-name">Tùng Lâm </em></div>
+        <div class="hero-stats">
+          <div class="stat-card">
+            <div class="stat-ring-wrap">
+              <svg viewBox="0 0 80 80" width="80" height="80">
+                <circle class="ring-bg" cx="40" cy="40" r="33" fill="none" stroke-width="7"/>
+                <circle class="ring-fill" id="score-ring" cx="40" cy="40" r="33" fill="none" stroke-width="7" stroke-dasharray="207.35" stroke-dashoffset="207.35"/>
+              </svg>
+              <div class="ring-num" id="score-num">0</div>
+            </div>
+            <div class="stat-label">Green Score</div>
+          </div>
+          <div class="impact-card">
+            <div class="impact-row">
+              <span class="impact-emoji">🌳</span>
+              <div><div class="impact-val" id="trees-num">0.0</div><div class="impact-desc">cây xanh đã cứu</div></div>
+            </div>
+            <div class="impact-row">
+              <span class="impact-emoji">📉</span>
+              <div><div class="impact-val" id="co2-today">0.0</div><div class="impact-desc">kg CO₂ hôm nay</div></div>
+            </div>
+            <div class="impact-row">
+              <span class="impact-emoji">♻️</span>
+              <div><div class="impact-val" id="plastic-saved">0</div><div class="impact-desc">đồ nhựa tiết kiệm</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-float">
+        <div class="tip-card">
+          <div class="tip-bulb">💡</div>
+          <div>
+            <div class="tip-header">🤖 AI Tip hôm nay</div>
+            <div class="tip-text" id="tip-text">
+              <div class="tip-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-pad">
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-head">
+            <div class="card-title">📊 7 ngày qua</div>
+            <div class="badge-pill up" id="trend-badge">↑ Cải thiện</div>
+          </div>
+          <div class="chart-bars" id="chart-bars"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:10px">
+            <span style="font-size:10px;color:var(--text-muted)">🟢 Tốt &nbsp;🟡 TB &nbsp;🔴 Cao</span>
+            <span style="font-size:10px;color:var(--text-muted);font-family:'Space Mono',monospace" id="week-avg">avg —</span>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><div class="card-title">🎯 Mục tiêu</div><div class="badge-pill" id="goal-pct">0%</div></div>
+            <div class="prog-label"><span>Giảm 20% CO₂</span><span id="goal-val">0/20%</span></div>
+            <div class="prog-track"><div class="prog-fill" id="goal-bar" style="width:0%"></div></div>
+            <div style="background:linear-gradient(135deg,#e8f8f0,var(--mist));border-radius:10px;padding:10px 12px;margin-top:12px;font-size:12px;color:var(--canopy);font-weight:600">
+              🌲 <span id="trees-progress">0.0 cây xanh đã cứu!</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">📈 So sánh tuần</div></div>
+            <div style="text-align:center;padding:8px 0">
+              <div style="font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:var(--canopy)" id="compare-pct">+0%</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="compare-label">so với tuần trước</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+              <div style="background:var(--mist);border-radius:10px;padding:8px;text-align:center">
+                <div style="font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--canopy)" id="this-week-avg">0</div>
+                <div style="font-size:9px;color:var(--text-muted)">tuần này</div>
+              </div>
+              <div style="background:#fef6ed;border-radius:10px;padding:8px;text-align:center">
+                <div style="font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--amber)" id="last-week-avg">0</div>
+                <div style="font-size:9px;color:var(--text-muted)">tuần trước</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <div class="card-head"><div class="card-title">🏅 Huy hiệu</div></div>
+          <div class="badges-row" id="badges-row"></div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <div class="card-head"><div class="card-title">⚡ Phân tích hôm nay</div></div>
+          <div id="breakdown-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== LOG ========== -->
+    <div class="view" id="view-log">
+      <div class="form-hero">
+        <h1>✏️ Ghi nhật ký hôm nay</h1>
+        <p>Ghi lại hoạt động để AI tính CO₂ và tư vấn cải thiện</p>
+      </div>
+
+      <div class="form-section">
+        <div class="section-label">🚗 Phương tiện di chuyển</div>
+        <div class="opt-grid">
+          <div class="opt-btn sel" onclick="select(this,'transport','walk')"><span class="opt-emoji">🚶</span><span class="opt-label">Đi bộ</span></div>
+          <div class="opt-btn" onclick="select(this,'transport','bicycle')"><span class="opt-emoji">🚲</span><span class="opt-label">Xe đạp</span></div>
+          <div class="opt-btn" onclick="select(this,'transport','bus')"><span class="opt-emoji">🚌</span><span class="opt-label">Xe buýt</span></div>
+          <div class="opt-btn" onclick="select(this,'transport','motorbike')"><span class="opt-emoji">🛵</span><span class="opt-label">Xe máy</span></div>
+          <div class="opt-btn" onclick="select(this,'transport','car')"><span class="opt-emoji">🚗</span><span class="opt-label">Ô tô</span></div>
+        </div>
+
+        <div class="section-label">📏 Quãng đường (km)</div>
+        <div class="slider-row"><span class="slider-val" id="km-val">5</span><span class="slider-unit">km</span></div>
+        <input type="range" id="km-slider" min="0" max="50" value="5" step="0.5" oninput="document.getElementById('km-val').textContent=this.value">
+
+        <div class="section-label">⚡ Dùng điện</div>
+        <div class="slider-row"><span class="slider-val" id="elec-val">3</span><span class="slider-unit">giờ</span></div>
+        <input type="range" id="elec-slider" min="0" max="12" value="3" step="0.5" oninput="document.getElementById('elec-val').textContent=this.value">
+
+        <div class="section-label">🍽️ Bữa ăn</div>
+        <div class="opt-grid">
+          <div class="opt-btn" onclick="select(this,'food','vegan')"><span class="opt-emoji">🌱</span><span class="opt-label">Thuần chay</span></div>
+          <div class="opt-btn sel" onclick="select(this,'food','vegetarian')"><span class="opt-emoji">🥗</span><span class="opt-label">Rau củ</span></div>
+          <div class="opt-btn" onclick="select(this,'food','meat')"><span class="opt-emoji">🍖</span><span class="opt-label">Thịt</span></div>
+        </div>
+
+        <div class="section-label">🛍️ Đồ nhựa dùng một lần</div>
+        <div class="counter-row">
+          <button class="count-btn" onclick="changeCount(-1)">−</button>
+          <div class="count-num" id="plastic-count">0</div>
+          <button class="count-btn" onclick="changeCount(1)">+</button>
+          <span style="font-size:12px;color:var(--text-muted)">chai/túi/ống hút</span>
+        </div>
+
+        <div class="section-label">🚿 Tắm</div>
+        <div class="slider-row"><span class="slider-val" id="shower-val">8</span><span class="slider-unit">phút</span></div>
+        <input type="range" id="shower-slider" min="1" max="30" value="8" oninput="document.getElementById('shower-val').textContent=this.value">
+      </div>
+
+      <button class="submit-btn" onclick="submitLog()">🌿 Tính CO₂ & nhận phản hồi AI</button>
+    </div>
+
+    <!-- ========== ANALYZE ========== -->
+    <div class="view" id="view-analyze">
+      <div class="page-header"><div class="page-title">📷 Phân tích rác thải</div><div class="page-sub">Chụp ảnh rác để AI phân loại và tính tác động CO₂</div></div>
+      <div class="section-pad">
+        <div class="upload-zone" onclick="document.getElementById('img-input').click()">
+          <input type="file" id="img-input" accept="image/*" onchange="analyzeImage(this)">
+          <span class="upload-icon" id="upload-preview-icon">📸</span>
+          <div class="upload-text">Nhấn để chọn ảnh rác</div>
+          <div class="upload-sub">AI sẽ phân loại và tính tác động môi trường</div>
+        </div>
+        <div class="analyze-result card" id="analyze-result">
+          <div class="card-head">
+            <div class="result-category" id="result-cat">🔍 Đang phân tích...</div>
+          </div>
+          <div id="result-detail"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== NEWS ========== -->
+    <div class="view" id="view-news">
+      <div class="page-header"><div class="page-title">🌍 Bản tin xanh</div><div class="page-sub">Tin tức môi trường được AI tóm tắt cho học sinh</div></div>
+      <div class="section-pad" id="news-list">
+        <div style="text-align:center;padding:40px 0;color:var(--text-muted)">
+          <div style="font-size:32px;margin-bottom:10px">🌿</div>
+          <div class="tip-loading" style="justify-content:center;margin-bottom:8px"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div>Đang tải bản tin...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== RANK ========== -->
+    <div class="view" id="view-rank">
+      <div class="page-header"><div class="page-title">🏆 Xếp hạng</div><div class="page-sub">Bảng xếp hạng lớp học của bạn</div></div>
+      <div class="section-pad">
+        <div class="card" id="rank-list">
+          <div style="text-align:center;padding:20px;color:var(--text-muted)">Đang tải...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PROFILE ========== -->
+    <div class="view" id="view-profile">
+      <div class="profile-hero">
+        <div class="profile-avatar">👤</div>
+        <div class="profile-name" id="profile-name">Lại Tùng Lâm</div>
+        <div class="profile-school" id="profile-school">THPT Lý Thái Tổ - 11Q1</div>
+      </div>
+      <div class="section-pad">
+        <div class="stats-grid" style="margin-bottom:14px">
+          <div class="stat-box"><div class="stat-box-val" id="prof-score">72</div><div class="stat-box-label">Green Score TB</div></div>
+          <div class="stat-box"><div class="stat-box-val" id="prof-days">30</div><div class="stat-box-label">Ngày theo dõi</div></div>
+          <div class="stat-box"><div class="stat-box-val" id="prof-trees">1.2</div><div class="stat-box-label">Cây xanh cứu</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">📊 Tổng quan 30 ngày</div></div>
+          <div class="breakdown-row"><span class="breakdown-emoji">🚗</span><span class="breakdown-label">Di chuyển</span><div class="breakdown-bar"><div class="breakdown-fill" id="pb-transport" style="width:0%"></div></div><span class="breakdown-val" id="pb-transport-val">0 kg</span></div>
+          <div class="breakdown-row"><span class="breakdown-emoji">⚡</span><span class="breakdown-label">Điện</span><div class="breakdown-bar"><div class="breakdown-fill" id="pb-elec" style="width:0%"></div></div><span class="breakdown-val" id="pb-elec-val">0 kg</span></div>
+          <div class="breakdown-row"><span class="breakdown-emoji">🍽️</span><span class="breakdown-label">Thực phẩm</span><div class="breakdown-bar"><div class="breakdown-fill" id="pb-food" style="width:0%"></div></div><span class="breakdown-val" id="pb-food-val">0 kg</span></div>
+          <div class="breakdown-row"><span class="breakdown-emoji">🛍️</span><span class="breakdown-label">Nhựa</span><div class="breakdown-bar"><div class="breakdown-fill" id="pb-plastic" style="width:0%"></div></div><span class="breakdown-val" id="pb-plastic-val">0 kg</span></div>
+          <div class="breakdown-row"><span class="breakdown-emoji">🚿</span><span class="breakdown-label">Nước</span><div class="breakdown-bar"><div class="breakdown-fill" id="pb-water" style="width:0%"></div></div><span class="breakdown-val" id="pb-water-val">0 kg</span></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" id="mob-nav">
+  <button class="mob-btn active" onclick="go('home',this,true)"><span class="mob-icon">🏠</span><span class="mob-label">Home</span></button>
+  <button class="mob-btn" onclick="go('news',this,true)"><span class="mob-icon">🌍</span><span class="mob-label">Tin tức</span></button>
+  <button class="mob-btn mob-cta" onclick="go('log',this,true)"><span class="mob-icon">✏️</span><span class="mob-label">Ghi</span></button>
+  <button class="mob-btn" onclick="go('rank',this,true)"><span class="mob-icon">🏆</span><span class="mob-label">Xếp hạng</span></button>
+  <button class="mob-btn" onclick="go('profile',this,true)"><span class="mob-icon">👤</span><span class="mob-label">Hồ sơ</span></button>
+</nav>
+<script src="src/js/index.js"></script>
+</body>
+</html>
